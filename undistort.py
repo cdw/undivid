@@ -11,7 +11,7 @@ coefficients. You can get these for your camera using one of these packages:
 In order to write out the undistorted video, your version of OpenCV will need
 to be compiled with ffmpeg support. On OSX the easiest way to do this is with
 homebrew (http://brew.sh). I had already installed ffmpeg and OpenCV so this is
-the sequence I used which got everything working for me: 
+the sequence I used which got everything working for me:
     brew uninstall opencv
     brew uninstall ffmpeg
     brew install ffmpeg
@@ -32,7 +32,7 @@ import numpy as np
 # Set parameters
 FILENAME_IN = "GOPR9444.MP4"
 FILENAME_OUT = "undistorted.mp4"
-CODEC = 'mp4v' #'IYUV' 
+CODEC = 'mp4v' #'IYUV'
 FC = [582.741, 580.065]  # focal lengths for GoPro Hero3+ Black
 CC = [635.154, 371.917]  # principle points for same
 KC = [-0.228, 0.0469, 0.0003, -0.0005, 0.0000]  # distortion coeffs for same
@@ -88,14 +88,14 @@ def main():
     cam_matrix, profile = create_matrix_profile(FC, CC, KC)
     # Load video
     video = cv2.VideoCapture(FILENAME_IN)
-    fourcc = cv2.cv.FOURCC(*list(CODEC))
-    fps = video.get(cv2.cv.CV_CAP_PROP_FPS) 
-    frame_count = video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-    size = (int(video.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)),
-            int(video.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)))
+    fourcc = int(video.get(cv2.CAP_PROP_FOURCC))
+    fps = video.get(cv2.CAP_PROP_FPS)
+    frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+    size = (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)),
+            int(video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     writer = cv2.VideoWriter(FILENAME_OUT, fourcc, fps, size)
     while video.grab() is True:
-        log_it("On frame %i of %i."%(video.get(cv2.cv.CV_CAP_PROP_POS_FRAMES), 
+        log_it("On frame %i of %i."%(video.get(cv2.CAP_PROP_POS_FRAMES),
                                     frame_count))
         frame =  cv2.undistort(video.retrieve()[1], cam_matrix, profile)
         writer.write(frame)
